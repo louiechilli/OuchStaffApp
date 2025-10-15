@@ -74,7 +74,7 @@ class BookingPersistenceService
             }
 
              // Create required documents for this booking
-            $this->documentService->createDocumentsForBooking($booking, $service, $client);
+            // $this->documentService->createDocumentsForBooking($booking, $service, $client);
 
 
             Log::info('BookingPersistenceService DB transaction complete', ['booking_id' => $booking->id]);

@@ -19,185 +19,243 @@
         ];
     });
     $totalAmount = $serviceLines->sum('line_total');
+    
+    // Determine payment status
+    $paymentStatus = 'unpaid';
+    $paymentLabel = 'Unpaid';
+    if($payments->isNotEmpty()) {
+        $latestPayment = $payments->first();
+        if(in_array($latestPayment->status, ['succeeded', 'completed', 'paid'])) {
+            $paymentStatus = 'paid';
+            $paymentLabel = 'Paid';
+        } elseif($latestPayment->status === 'refunded') {
+            $paymentStatus = 'refunded';
+            $paymentLabel = 'Refunded';
+        }
+    }
 @endphp
 
 @section('content')
-<div class="max-w-5xl mx-auto p-6">
-    @include('components.pageHeader', [
-        'title' => 'Booking #'.$booking->id,
-        'subtitle' => $booking->type ? ucfirst($booking->type).' booking' : 'Booking details',
-        'action' => 'Back to Bookings', 
-        'actionUrl' => route('bookings.index')
-    ])
+<div class="min-h-screen bg-slate-50">
+    <div class="max-w-6xl mx-auto px-6 py-8">
+        @include('components.pageHeader', [
+            'title' => 'Booking #'.$booking->id,
+            'subtitle' => $booking->type ? ucfirst($booking->type).' booking' : 'Booking details',
+            'action' => 'Back to Bookings', 
+            'actionUrl' => route('bookings.index')
+        ])
 
-    {{-- Payment Status Indicators --}}
-    @if($payments->isNotEmpty())
-        @php
-            $latestPayment = $payments->first();
-        @endphp
-
-        @if($latestPayment->status === 'succeeded' || $latestPayment->status === 'completed' || $latestPayment->status === 'paid')
-            <div class="w-full bg-green-100 rounded-lg p-4 mb-6 text-center text-green-800 font-bold text-2xl">
-                PAID
-            </div>
-        @elseif($latestPayment->status === 'failed' || $latestPayment->status === 'pending' || $latestPayment->status === 'unpaid')
-            <div class="w-full bg-red-100 rounded-lg p-4 mb-6 text-center text-red-800 font-bold text-2xl">
-                UNPAID
-            </div>
-        @elseif($latestPayment->status === 'refunded')
-            <div class="w-full bg-gray-100 rounded-lg p-4 mb-6 text-center text-gray-800 font-bold text-2xl">
-                REFUNDED
-            </div>
-        @endif
-    @else
-        <div class="w-full bg-red-100 rounded-lg p-4 mb-6 text-center text-red-800 font-bold text-2xl">
-            UNPAID
+        {{-- Payment Status --}}
+        <div class="mb-8">
+            @if($paymentStatus === 'paid')
+                <div class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 border border-emerald-200 rounded-lg">
+                    <div class="w-2 h-2 bg-emerald-500 rounded-full"></div>
+                    <span class="text-sm font-medium text-emerald-900">{{ $paymentLabel }}</span>
+                </div>
+            @elseif($paymentStatus === 'refunded')
+                <div class="inline-flex items-center gap-2 px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg">
+                    <div class="w-2 h-2 bg-slate-500 rounded-full"></div>
+                    <span class="text-sm font-medium text-slate-900">{{ $paymentLabel }}</span>
+                </div>
+            @else
+                <div class="inline-flex items-center gap-2 px-4 py-2 bg-amber-50 border border-amber-200 rounded-lg">
+                    <div class="w-2 h-2 bg-amber-500 rounded-full"></div>
+                    <span class="text-sm font-medium text-amber-900">{{ $paymentLabel }}</span>
+                </div>
+            @endif
         </div>
-    @endif
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Left: booking details -->
-        <div class="lg:col-span-2 space-y-6">
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h2 class="text-lg font-semibold text-gray-900 mb-4 capitalize">{{ $booking->type }}</h2>
-                <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <dt class="text-sm text-gray-500">Date</dt>
-                        <dd class="text-base font-medium text-gray-900">
-                            @if($startLocal)
-                                {{ $startLocal->format('l, j F Y') }}
-                            @else
-                                —
-                            @endif
-                        </dd>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {{-- Main Content --}}
+            <div class="lg:col-span-2 space-y-6">
+                {{-- Appointment Details --}}
+                <div class="bg-white rounded-lg border border-slate-200 divide-y divide-slate-100">
+                    <div class="px-6 py-4">
+                        <h2 class="text-base font-semibold text-slate-900">Appointment</h2>
                     </div>
-                    <div>
-                        <dt class="text-sm text-gray-500">Time</dt>
-                        <dd class="text-base font-medium text-gray-900">
-                            @if($startLocal && $endLocal)
-                                {{ $startLocal->format('H:i') }} &ndash; {{ $endLocal->format('H:i') }} <span class="text-gray-500">({{ $tz }})</span>
-                            @else
-                                —
-                            @endif
-                        </dd>
+                    <div class="px-6 py-6">
+                        <dl class="grid grid-cols-2 gap-x-6 gap-y-6">
+                            <div>
+                                <dt class="text-sm font-medium text-slate-500 mb-1">Date</dt>
+                                <dd class="text-base text-slate-900">
+                                    @if($startLocal)
+                                        {{ $startLocal->format('l, j F Y') }}
+                                    @else
+                                        <span class="text-slate-400">Not scheduled</span>
+                                    @endif
+                                </dd>
+                            </div>
+                            <div>
+                                <dt class="text-sm font-medium text-slate-500 mb-1">Time</dt>
+                                <dd class="text-base text-slate-900">
+                                    @if($startLocal && $endLocal)
+                                        {{ $startLocal->format('H:i') }} – {{ $endLocal->format('H:i') }}
+                                        <span class="text-sm text-slate-400 ml-1">({{ $tz }})</span>
+                                    @else
+                                        <span class="text-slate-400">TBD</span>
+                                    @endif
+                                </dd>
+                            </div>
+                            <div>
+                                <dt class="text-sm font-medium text-slate-500 mb-1">Duration</dt>
+                                <dd class="text-base text-slate-900">
+                                    {{ $duration ? $duration.' minutes' : '—' }}
+                                </dd>
+                            </div>
+                            <div>
+                                <dt class="text-sm font-medium text-slate-500 mb-1">Artist</dt>
+                                <dd class="text-base text-slate-900">
+                                    {{ $artist?->first_name . ' ' . $artist?->last_name ?? '—' }}
+                                </dd>
+                            </div>
+                        </dl>
                     </div>
-                    <div>
-                        <dt class="text-sm text-gray-500">Duration</dt>
-                        <dd class="text-base text-gray-900">{{ $duration ? $duration.' mins' : '—' }}</dd>
-                    </div>
-                    <div>
-                        <dt class="text-sm text-gray-500">Artist</dt>
-                        <dd class="text-base text-gray-900">{{ $artist?->first_name . ' ' . $artist?->last_name ?? '—' }}</dd>
-                    </div>
-                </dl>
-            </div>
+                </div>
 
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h2 class="text-lg font-semibold text-gray-900 mb-4">Client</h2>
-                @if($primaryClient)
-                    <div class="flex items-start gap-3">
-                        <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-700 font-medium">
-                            {{ strtoupper(substr($primaryClient->name ?? ($primaryClient->first_name ?? '?'), 0, 1)) }}
-                        </div>
-                        <div>
-                            <div class="font-medium text-gray-900">{{ $primaryClient->name ?? trim(($primaryClient->first_name ?? '').' '.($primaryClient->last_name ?? '')) }}</div>
-                            <div class="text-sm text-gray-600">{{ $primaryClient->email ?? '' }}</div>
-                            <div class="text-sm text-gray-600">{{ $primaryClient->phone ?? '' }}</div>
-                        </div>
+                {{-- Client --}}
+                <div class="bg-white rounded-lg border border-slate-200 divide-y divide-slate-100">
+                    <div class="px-6 py-4">
+                        <h2 class="text-base font-semibold text-slate-900">Client</h2>
                     </div>
-                @else
-                    <p class="text-sm text-gray-600">No client linked.</p>
-                @endif
-            </div>
+                    <div class="px-6 py-6">
+                        @if($primaryClient)
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 font-medium flex-shrink-0">
+                                    {{ strtoupper(substr($primaryClient->name ?? ($primaryClient->first_name ?? '?'), 0, 1)) }}
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <div class="font-medium text-slate-900 mb-2">
+                                        {{ $primaryClient->name ?? trim(($primaryClient->first_name ?? '').' '.($primaryClient->last_name ?? '')) }}
+                                    </div>
+                                    @if($primaryClient->email)
+                                        <div class="text-sm text-slate-600 mb-1">{{ $primaryClient->email }}</div>
+                                    @endif
+                                    @if($primaryClient->phone)
+                                        <div class="text-sm text-slate-600">{{ $primaryClient->phone }}</div>
+                                    @endif
+                                </div>
+                            </div>
+                        @else
+                            <p class="text-sm text-slate-500">No client linked to this booking.</p>
+                        @endif
+                    </div>
+                </div>
 
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h2 class="text-lg font-semibold text-gray-900 mb-4">Services</h2>
-                @if($serviceLines->isEmpty())
-                    <p class="text-sm text-gray-600">No services attached.</p>
-                @else
-                    <div class="overflow-hidden rounded-lg border border-gray-200">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Service</th>
-                                    <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Unit Price</th>
-                                    <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Qty</th>
-                                    <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Line Total</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-100">
+                {{-- Services --}}
+                <div class="bg-white rounded-lg border border-slate-200 divide-y divide-slate-100">
+                    <div class="px-6 py-4">
+                        <h2 class="text-base font-semibold text-slate-900">Services</h2>
+                    </div>
+                    <div class="px-6 py-6">
+                        @if($serviceLines->isEmpty())
+                            <p class="text-sm text-slate-500">No services attached to this booking.</p>
+                        @else
+                            <div class="space-y-3 mb-6">
                                 @foreach($serviceLines as $line)
-                                    <tr>
-                                        <td class="px-4 py-3 text-sm text-gray-900">{{ $line['name'] }}</td>
-                                        <td class="px-4 py-3 text-sm text-right text-gray-700">£{{ number_format($line['unit_price'], 2) }}</td>
-                                        <td class="px-4 py-3 text-sm text-right text-gray-700">{{ $line['qty'] }}</td>
-                                        <td class="px-4 py-3 text-sm text-right text-gray-900">£{{ number_format($line['line_total'], 2) }}</td>
-                                    </tr>
+                                    <div class="flex items-center justify-between py-3 border-b border-slate-100 last:border-0">
+                                        <div class="flex-1">
+                                            <div class="font-medium text-slate-900">{{ $line['name'] }}</div>
+                                            <div class="text-sm text-slate-500 mt-0.5">
+                                                £{{ number_format($line['unit_price'], 2) }} × {{ $line['qty'] }}
+                                            </div>
+                                        </div>
+                                        <div class="text-base font-medium text-slate-900 ml-4">
+                                            £{{ number_format($line['line_total'], 2) }}
+                                        </div>
+                                    </div>
                                 @endforeach
-                            </tbody>
-                            <tfoot class="bg-gray-50">
-                                <tr>
-                                    <th colspan="3" class="px-4 py-3 text-right text-sm font-semibold text-gray-900">Total</th>
-                                    <td class="px-4 py-3 text-right text-sm font-semibold text-gray-900">£{{ number_format($totalAmount, 2) }}</td>
-                                </tr>
-                            </tfoot>
-                        </table>
+                            </div>
+                            
+                            <div class="flex items-center justify-between pt-4 border-t border-slate-200">
+                                <span class="text-base font-semibold text-slate-900">Total</span>
+                                <span class="text-xl font-semibold text-slate-900">£{{ number_format($totalAmount, 2) }}</span>
+                            </div>
+                        @endif
                     </div>
-                @endif
-            </div>
-
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <div class="flex items-center justify-between">
-                    <h2 class="text-lg font-semibold text-gray-900">Notes</h2>
-                    {{-- <a href="{{ route('bookings.notes.create', $booking) }}" class="px-3 py-2 text-sm rounded-lg border border-gray-300 bg-white hover:bg-gray-50">Add note</a> --}}
                 </div>
-                <div class="mt-4 space-y-4">
-                    @forelse(($booking->notes ?? []) as $note)
-                        <div class="border border-gray-200 rounded-lg p-3">
-                            <div class="text-sm text-gray-600 mb-1">By {{ $note->author?->name ?? 'System' }} · {{ $note->created_at?->setTimezone($tz)->format('j M Y H:i') }}</div>
-                            <div class="text-gray-900 whitespace-pre-line">{{ $note->body }}</div>
-                        </div>
-                    @empty
-                        <p class="text-sm text-gray-600">No notes yet.</p>
-                    @endforelse
+
+                {{-- Notes --}}
+                <div class="bg-white rounded-lg border border-slate-200 divide-y divide-slate-100">
+                    <div class="px-6 py-4">
+                        <h2 class="text-base font-semibold text-slate-900">Notes</h2>
+                    </div>
+                    <div class="px-6 py-6">
+                        @forelse(($booking->notes ?? []) as $note)
+                            <div class="mb-4 last:mb-0 pb-4 last:pb-0 border-b border-slate-100 last:border-0">
+                                <div class="text-sm text-slate-500 mb-2">
+                                    {{ $note->author?->name ?? 'System' }} · {{ $note->created_at?->setTimezone($tz)->format('j M Y H:i') }}
+                                </div>
+                                <div class="text-slate-900 whitespace-pre-line">{{ $note->body }}</div>
+                            </div>
+                        @empty
+                            <p class="text-sm text-slate-500">No notes yet.</p>
+                        @endforelse
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Right: quick info / actions -->
-        <div class="space-y-6">
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h3 class="text-base font-semibold text-gray-900 mb-4">Summary</h3>
-                <dl class="space-y-2">
-                    <div class="flex items-center justify-between">
-                        <dt class="text-sm text-gray-500">Artist</dt>
-                        <dd class="text-sm font-medium text-gray-900">{{ $artist?->first_name . ' ' . $artist?->last_name ?? '—' }}</dd>
+            {{-- Sidebar --}}
+            <div class="space-y-6">
+                {{-- Summary --}}
+                <div class="bg-white rounded-lg border border-slate-200 divide-y divide-slate-100">
+                    <div class="px-6 py-4">
+                        <h3 class="text-base font-semibold text-slate-900">Summary</h3>
                     </div>
-                    <div class="flex items-center justify-between">
-                        <dt class="text-sm text-gray-500">Client</dt>
-                        <dd class="text-sm font-medium text-gray-900">{{ $primaryClient?->name ?? trim(($primaryClient->first_name ?? '').' '.($primaryClient->last_name ?? '')) ?: '—' }}</dd>
+                    <div class="px-6 py-6">
+                        <dl class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <dt class="text-sm text-slate-500">Artist</dt>
+                                <dd class="text-sm font-medium text-slate-900 text-right">
+                                    {{ $artist?->first_name . ' ' . $artist?->last_name ?? '—' }}
+                                </dd>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <dt class="text-sm text-slate-500">Client</dt>
+                                <dd class="text-sm font-medium text-slate-900 text-right">
+                                    {{ $primaryClient?->name ?? trim(($primaryClient->first_name ?? '').' '.($primaryClient->last_name ?? '')) ?: '—' }}
+                                </dd>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <dt class="text-sm text-slate-500">Date</dt>
+                                <dd class="text-sm font-medium text-slate-900">
+                                    {{ $startLocal?->format('j M Y') ?? '—' }}
+                                </dd>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <dt class="text-sm text-slate-500">Time</dt>
+                                <dd class="text-sm font-medium text-slate-900">
+                                    {{ $startLocal?->format('H:i') ?? '—' }} – {{ $endLocal?->format('H:i') ?? '—' }}
+                                </dd>
+                            </div>
+                            <div class="flex items-center justify-between pt-4 border-t border-slate-200">
+                                <dt class="text-sm font-semibold text-slate-900">Total</dt>
+                                <dd class="text-base font-semibold text-slate-900">£{{ number_format($totalAmount, 2) }}</dd>
+                            </div>
+                        </dl>
                     </div>
-                    <div class="flex items-center justify-between">
-                        <dt class="text-sm text-gray-500">Date</dt>
-                        <dd class="text-sm font-medium text-gray-900">{{ $startLocal?->format('j M Y') }}</dd>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <dt class="text-sm text-gray-500">Time</dt>
-                        <dd class="text-sm font-medium text-gray-900">{{ $startLocal?->format('H:i') }} &ndash; {{ $endLocal?->format('H:i') }}</dd>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <dt class="text-sm text-gray-500">Total</dt>
-                        <dd class="text-sm font-semibold text-gray-900">£{{ number_format($totalAmount, 2) }}</dd>
-                    </div>
-                </dl>
-            </div>
+                </div>
 
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h3 class="text-base font-semibold text-gray-900 mb-4">Actions</h3>
-                <div class="grid grid-cols-1 gap-2">
-                    <a href="{{ route('payment.index', $booking) }}" class="w-full inline-flex items-center justify-center px-4 py-2 rounded-lg text-sm font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200">Take Payment</a>
-                    {{-- <a href="{{ route('bookings.reschedule', $booking) }}" class="w-full inline-flex items-center justify-center px-4 py-2 rounded-lg text-sm font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200">Reschedule</a> --}}
-                    {{-- <a href="{{ route('bookings.cancel', $booking) }}" class="w-full inline-flex items-center justify-center px-4 py-2 rounded-lg text-sm font-medium text-red-700 bg-red-50 hover:bg-red-100 border border-red-200">Cancel</a> --}}
+                {{-- Actions --}}
+                <div class="bg-white rounded-lg border border-slate-200 divide-y divide-slate-100">
+                    <div class="px-6 py-4">
+                        <h3 class="text-base font-semibold text-slate-900">Actions</h3>
+                    </div>
+                    <div class="px-6 py-6 space-y-3">
+                        <a href="{{ route('payment.index', $booking) }}" 
+                           class="w-full inline-flex items-center justify-center px-4 py-3 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
+                            Take Payment
+                        </a>
+                        {{-- Uncomment when routes are ready
+                        <a href="{{ route('bookings.reschedule', $booking) }}" 
+                           class="w-full inline-flex items-center justify-center px-4 py-3 text-sm font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors border border-slate-200">
+                            Reschedule
+                        </a>
+                        <a href="{{ route('bookings.cancel', $booking) }}" 
+                           class="w-full inline-flex items-center justify-center px-4 py-3 text-sm font-medium text-red-700 bg-red-50 hover:bg-red-100 rounded-lg transition-colors border border-red-200">
+                            Cancel Booking
+                        </a>
+                        --}}
+                    </div>
                 </div>
             </div>
         </div>
