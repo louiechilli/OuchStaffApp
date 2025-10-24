@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Services\GoogleCalendarService;
 use App\Services\GoogleGmailService;
 use App\Jobs\SendOuchEmail;
+use App\Services\SumUpReaderService;
 
 class DashboardController extends Controller
 {

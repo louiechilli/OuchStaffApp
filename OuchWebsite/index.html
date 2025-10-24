@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ouch Tattoo Studio - Waltham Abbey</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background-color: #0d1410;
+            color: #e8e8e8;
+            overflow-x: hidden;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            padding: 30px;
+            background: #0d1410;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav a {
+            color: #c9a962;
+            text-decoration: none;
+            font-size: 14px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: color 0.3s;
+        }
+
+        .nav a:hover {
+            color: #f4d4a6;
+        }
+
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 80px 10%;
+            min-height: 600px;
+        }
+
+        .hero-content {
+            flex: 1;
+            max-width: 500px;
+        }
+
+        .hero-title {
+            font-size: 72px;
+            line-height: 1.1;
+            margin-bottom: 30px;
+            font-weight: 400;
+        }
+
+        .defies {
+            color: #c9a962;
+            font-style: italic;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #c9a962, #b89968);
+            color: #0a0a0a;
+            padding: 18px 40px;
+            border: none;
+            font-size: 16px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            clip-path: polygon(10% 0%, 100% 0%, 90% 100%, 0% 100%);
+            transition: transform 0.3s;
+            font-weight: bold;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+        }
+
+        .hours {
+            margin-top: 30px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .hour-box {
+            background: #c9a962;
+            color: #0a0a0a;
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .hero-image {
+            flex: 1;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .image-frame {
+            width: 450px;
+            height: 500px;
+            background: linear-gradient(135deg, #c9a962, #8b7355);
+            clip-path: polygon(15% 0%, 100% 0%, 100% 70%, 85% 100%, 0% 100%, 0% 30%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .artist-placeholder {
+            width: 90%;
+            height: 90%;
+            background: #1a1a1a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 120px;
+            color: #c9a962;
+        }
+
+        .price-tag {
+            position: absolute;
+            bottom: 50px;
+            right: -30px;
+            background: white;
+            color: #0a0a0a;
+            padding: 15px 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+        }
+
+        .price-tag div:first-child {
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .price-tag div:last-child {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .features {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            padding: 50px 10%;
+            background: rgba(212, 184, 150, 0.05);
+            flex-wrap: wrap;
+        }
+
+        .feature {
+            text-align: center;
+            color: #c9a962;
+        }
+
+        .feature-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .portfolio {
+            padding: 100px 10%;
+        }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            margin-top: 50px;
+        }
+
+        .portfolio-item {
+            background: white;
+            padding: 40px;
+            text-align: center;
+            border-radius: 15px;
+            transition: transform 0.3s;
+        }
+
+        .portfolio-item:hover {
+            transform: translateY(-10px);
+        }
+
+        .portfolio-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .portfolio-price {
+            color: #0a0a0a;
+            font-weight: bold;
+            font-size: 18px;
+            margin-top: 15px;
+        }
+
+        .about-section {
+            display: flex;
+            align-items: center;
+            gap: 60px;
+            padding: 100px 10%;
+        }
+
+        .about-image {
+            flex: 1;
+            height: 400px;
+            background: #2a2a2a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 100px;
+        }
+
+        .about-content {
+            flex: 1;
+        }
+
+        .about-content h2 {
+            font-size: 48px;
+            margin-bottom: 30px;
+            line-height: 1.2;
+        }
+
+        .about-content p {
+            line-height: 1.8;
+            color: #b8b8b8;
+            margin-bottom: 30px;
+        }
+
+        .testimonials {
+            padding: 100px 10%;
+            text-align: center;
+        }
+
+        .testimonials h2 {
+            font-size: 48px;
+            margin-bottom: 60px;
+        }
+
+        .testimonial-slider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        .testimonial-avatars {
+            display: flex;
+            gap: 15px;
+        }
+
+        .avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #c9a962, #8b7355);
+            border: 3px solid #0a0a0a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .avatar.large {
+            width: 90px;
+            height: 90px;
+            font-size: 36px;
+        }
+
+        .testimonial-content {
+            max-width: 600px;
+            text-align: left;
+            padding: 40px;
+            background: rgba(212, 184, 150, 0.05);
+        }
+
+        .testimonial-name {
+            font-size: 20px;
+            color: #c9a962;
+            margin-bottom: 15px;
+        }
+
+        .arrow-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #c9a962;
+            border: none;
+            color: #0a0a0a;
+            font-size: 20px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .arrow-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .faq {
+            padding: 100px 10%;
+        }
+
+        .faq h2 {
+            text-align: center;
+            font-size: 48px;
+            margin-bottom: 60px;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid #333;
+            padding: 25px 0;
+        }
+
+        .faq-question {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-size: 16px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .faq-answer {
+            margin-top: 20px;
+            line-height: 1.8;
+            color: #b8b8b8;
+            display: none;
+        }
+
+        .faq-item.active .faq-answer {
+            display: block;
+        }
+
+        .newsletter {
+            margin: 100px 10%;
+            padding: 60px;
+            background: linear-gradient(135deg, #f5f5f5, #e8e8e8);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .newsletter-icon {
+            font-size: 120px;
+        }
+
+        .newsletter-content {
+            flex: 1;
+        }
+
+        .newsletter h3 {
+            font-size: 36px;
+            color: #0a0a0a;
+            margin-bottom: 10px;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .newsletter input {
+            flex: 1;
+            padding: 15px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+
+        .newsletter button {
+            background: #c9a962;
+            color: #0a0a0a;
+            padding: 15px 35px;
+            border: none;
+            font-weight: bold;
+            letter-spacing: 1px;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .footer {
+            background: #111814;
+            padding: 60px 10%;
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid #333;
+        }
+
+        .footer-column h4 {
+            color: #c9a962;
+            margin-bottom: 20px;
+            font-size: 14px;
+            letter-spacing: 2px;
+        }
+
+        .footer-column a {
+            display: block;
+            color: #888;
+            text-decoration: none;
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+
+        .footer-bottom {
+            background: #111814;
+            padding: 30px 10%;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            border-top: 1px solid #1a1a1a;
+        }
+
+        .section-title {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .hero-title {
+                font-size: 48px;
+            }
+            
+            .portfolio-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .about-section {
+                flex-direction: column;
+            }
+        }
+</style>
+</head>
+<body>
+    <nav class="nav">
+        <a href="#home">Home</a>
+        <a href="#portfolio">Artists</a>
+        <a href="#pricing">Our Work</a>
+        <a href="#contact">Contact</a>
+    </nav>
+
+    <section class="hero" id="home" data-aos="fade-up">
+        <div class="hero-content">
+            <h1 class="hero-title">
+                Ink that looks<br>
+                the <span class="defies">B*llocks</span>
+            </h1>
+            <button class="cta-button">Get in touch</button>
+            <!-- <div class="hours">
+                <div class="hour-box">📅</div>
+                <div>
+                    <div>Mon-Fri: 11:00-21:00</div>
+                    <div>Sat-Sun: 10:00-20:00</div>
+                </div>
+            </div> -->
+        </div>
+        <div class="hero-image">
+            <div class="image-frame">
+                <div class="artist-placeholder" style="background-image: url('https://t4.ftcdn.net/jpg/02/35/71/59/360_F_235715934_cYav5r29HBij8dKN0XjD3ujgc3mk8ISa.jpg'); background-repeat: no-repeat; background-size: cover; background-position: center;">
+            </div>
+            <!-- <div class="price-tag">
+                <div>TIME</div>
+                <div>2 Weeks</div>
+                <div style="margin-top: 10px; font-size: 11px; color: #666;">PRICE</div>
+                <div>$ 2100.00</div>
+            </div> -->
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="feature" data-aos="zoom-in" data-aos-delay="100">
+            <div class="feature-icon">🎨</div>
+            <div>Layers</div>
+        </div>
+        <div class="feature" data-aos="zoom-in" data-aos-delay="200">
+            <div class="feature-icon">⚡</div>
+            <div>Sisyphus</div>
+        </div>
+        <div class="feature" data-aos="zoom-in" data-aos-delay="300">
+            <div class="feature-icon">⭕</div>
+            <div>Circeoles</div>
+        </div>
+        <div class="feature" data-aos="zoom-in" data-aos-delay="400">
+            <div class="feature-icon">📋</div>
+            <div>Catalog</div>
+        </div>
+        <div class="feature" data-aos="zoom-in" data-aos-delay="500">
+            <div class="feature-icon">💬</div>
+            <div>Quotient</div>
+        </div>
+    </section>
+
+    <section class="portfolio" id="portfolio">
+        <div class="portfolio-grid" data-aos="fade-up">
+            <div style="display: flex; flex-direction: column; justify-content: center;">
+                <h2 class="section-title">Tailored Process<br>will make you<br>scream, but then<br>happy!</h2>
+            </div>
+            <div class="portfolio-item">
+                <div class="portfolio-icon">🎩</div>
+                <div class="portfolio-price">$ 2800.00</div>
+            </div>
+            <div>
+                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='300'><rect fill='%232a2a2a' width='400' height='300'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='80' fill='%23c9a962'>💪</text></svg>" alt="Artist" style="width: 100%; height: 300px; object-fit: cover;">
+            </div>
+            <div class="portfolio-item">
+                <div class="portfolio-icon">🐍</div>
+                <div class="portfolio-price">$ 1590.00</div>
+            </div>
+        </div>
+    </section>
+    <section class="about-section" id="about">
+    <div class="about-image" data-aos="fade-right" style="height: 400px; background: #2a2a2a; display: flex; align-items: center; justify-content: center; font-size: 100px; background-image: url('https://png.pngtree.com/background/20250217/original/pngtree-tattoo-artist-during-her-work-picture-image_15648267.jpg'); background-position: center; background-repeat: no-repeat; background-size: cover;"></div>
+        <div class="about-content" data-aos="fade-left">
+            <h2>Highest rated<br>Tattoo Hub in<br>Waltham Abbey.</h2>
+            <p>Ouch Tattoo Studio brings world-class artistry to Waltham Abbey. Our award-winning artists combine traditional techniques with cutting-edge innovation to create stunning, one-of-a-kind body art that tells your unique story.</p>
+            <button class="cta-button">Contact Us Now</button>
+        </div>
+    </section>
+
+    <section class="testimonials" id="testimonials" data-aos="fade-up">
+        <h2>What Clients say?!</h2>
+        <div class="testimonial-slider">
+            <button class="arrow-btn">‹</button>
+            <div class="testimonial-avatars">
+                <div class="avatar">👤</div>
+                <div class="avatar">👤</div>
+                <div class="avatar large">👤</div>
+                <div class="avatar">👤</div>
+                <div class="avatar">👤</div>
+            </div>
+            <div class="testimonial-content">
+                <div class="testimonial-name">Caroline Jones</div>
+                <p>I recently had the pleasure of getting a tattoo at Fighting Star, and I couldn't be happier with the entire experience. From start to finish, everything about this tattoo shop exceeded my expectations.</p>
+            </div>
+            <button class="arrow-btn">›</button>
+        </div>
+    </section>
+
+    <section class="faq" id="faq" data-aos="fade-up">
+        <h2>F.A.Q.</h2>
+        <div class="faq-item">
+            <div class="faq-question">
+                What is the process? <span>+</span>
+            </div>
+            <div class="faq-answer">
+                Our process begins with a consultation where we discuss your vision, design preferences, and placement. We'll create a custom design, schedule your appointment, and guide you through aftercare to ensure your tattoo heals beautifully.
+            </div>
+        </div>
+        <div class="faq-item active">
+            <div class="faq-question">
+                How you determine price? <span>−</span>
+            </div>
+            <div class="faq-answer">
+                <strong>Size:</strong> Tattoo prices are often based on the size of the tattoo. Larger tattoos generally cost more than smaller ones. Some artists may charge per square inch or have set prices for different size categories.<br><br>
+                <strong>Complexity:</strong> The complexity and intricacy of the design play a significant role in pricing. Highly detailed designs typically require more time and skill, leading to a higher cost.<br><br>
+                <strong>Color:</strong> Tattoos with color typically cost more than black and grey tattoos. Vibrant colors often require more ink and skill, leading to a higher cost.
+            </div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">
+                Can you draw any tattoos? <span>+</span>
+            </div>
+            <div class="faq-answer">
+                Yes! Our talented artists can create custom designs based on your ideas, or you can choose from our extensive portfolio. We specialize in all styles from traditional to contemporary.
+            </div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">
+                What is your location? <span>+</span>
+            </div>
+            <div class="faq-answer">
+                We're located in the heart of Waltham Abbey, easily accessible by car and public transport. Visit us for a consultation or to view our portfolio in person.
+            </div>
+        </div>
+    </section>
+
+    <div class="newsletter" data-aos="fade-up">
+        <div class="newsletter-icon">📬</div>
+        <div class="newsletter-content">
+            <h3>Subscribe to<br>our Newsletter</h3>
+            <form class="newsletter-form">
+                <input type="email" placeholder="Enter your email...">
+                <button type="submit">Subscribe</button>
+            </form>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-column">
+            <h4>Navigation</h4>
+            <a href="#home">Home Page</a>
+            <a href="#portfolio">Portfolio</a>
+            <a href="#about">About Us</a>
+        </div>
+        <div class="footer-column">
+            <h4>Contact</h4>
+            <a href="#inquiries">Inquiries</a>
+            <a href="#pricing">Pricing</a>
+            <a href="#contact">Contact</a>
+        </div>
+        <div class="footer-column">
+            <h4>Social Media</h4>
+            <a href="#">Instagram</a>
+            <a href="#">Facebook</a>
+            <a href="#">Twitter</a>
+        </div>
+    </footer>
+
+    <div class="footer-bottom">
+        <p>© 2025 OUCH TATTOO STUDIO WALTHAM ABBEY. ALL RIGHTS RESERVED.</p>
+        <p style="margin-top: 10px;">TERMS & CONDITIONS | PRIVACY POLICY</p>
+    </div>
+
+</body>
+    <!-- GSAP and ScrollTrigger scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script>
+      gsap.registerPlugin(ScrollTrigger);
+
+      // Hero section animation
+      gsap.from(".hero-content > *", {
+        opacity: 0,
+        y: 60,
+        duration: 1.2,
+        stagger: 0.2,
+        scrollTrigger: {
+          trigger: ".hero",
+          start: "top 80%",
+        }
+      });
+
+      // Features animation
+      gsap.from(".feature", {
+        opacity: 0,
+        scale: 0.8,
+        duration: 1.2,
+        stagger: 0.15,
+        scrollTrigger: {
+          trigger: ".features",
+          start: "top 85%",
+        }
+      });
+
+      // Portfolio grid items
+      gsap.from(".portfolio-grid > *", {
+        opacity: 0,
+        y: 50,
+        duration: 1,
+        stagger: 0.25,
+        scrollTrigger: {
+          trigger: ".portfolio",
+          start: "top 85%",
+        }
+      });
+
+      // About section
+      gsap.from(".about-content > *", {
+        opacity: 0,
+        x: 60,
+        duration: 1.2,
+        stagger: 0.2,
+        scrollTrigger: {
+          trigger: ".about-section",
+          start: "top 85%",
+        }
+      });
+      gsap.from(".about-image", {
+        opacity: 0,
+        x: -60,
+        duration: 1.2,
+        scrollTrigger: {
+          trigger: ".about-section",
+          start: "top 85%",
+        }
+      });
+
+      // Testimonials
+      gsap.from(".testimonial-slider > *", {
+        opacity: 0,
+        y: 40,
+        duration: 1,
+        stagger: 0.15,
+        scrollTrigger: {
+          trigger: ".testimonials",
+          start: "top 85%",
+        }
+      });
+
+      // FAQ items
+      gsap.from(".faq-item", {
+        opacity: 0,
+        y: 30,
+        duration: 0.8,
+        stagger: 0.1,
+        scrollTrigger: {
+          trigger: ".faq",
+          start: "top 85%",
+        }
+      });
+
+      // Newsletter section
+      gsap.from(".newsletter > *", {
+        opacity: 0,
+        y: 50,
+        duration: 1.2,
+        stagger: 0.2,
+        scrollTrigger: {
+          trigger: ".newsletter",
+          start: "top 85%",
+        }
+      });
+
+      // Footer animation
+      gsap.from(".footer-column", {
+        opacity: 0,
+        y: 40,
+        duration: 1,
+        stagger: 0.2,
+        scrollTrigger: {
+          trigger: ".footer",
+          start: "top 90%",
+        }
+      });
+    </script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+      AOS.init({
+          duration: 1200,
+          once: true
+      });
+    </script>
+    <script>
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const item = question.parentElement;
+                const wasActive = item.classList.contains('active');
+                
+                document.querySelectorAll('.faq-item').forEach(faq => {
+                    faq.classList.remove('active');
+                    faq.querySelector('.faq-question span').textContent = '+';
+                });
+                
+                if (!wasActive) {
+                    item.classList.add('active');
+                    question.querySelector('span').textContent = '−';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

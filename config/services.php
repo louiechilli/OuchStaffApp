@@ -41,4 +41,8 @@ return [
         'redirect'      => env('GOOGLE_REDIRECT_URI'),
     ],
 
+    'sumup' => [
+        'api_key' => env('SUMUP_API_KEY'),
+        'base_url' => env('SUMUP_BASE_URL', 'https://api.sumup.com/v0.1')
+    ],
 ];

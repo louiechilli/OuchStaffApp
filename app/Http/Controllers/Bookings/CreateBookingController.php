@@ -17,6 +17,7 @@ use App\Services\Bookings\BookingPaymentService;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use App\Services\SumUpReaderService;
 
 class CreateBookingController extends Controller
 {
@@ -231,44 +232,7 @@ class CreateBookingController extends Controller
             'user_id' => optional(auth()->user())->id,
         ]);
 
-        return view('pages.bookings.selectPaymentMethod', compact('booking'));
+        return view('pages.payments.select-payment', compact('booking'));
     }
 
-    public function cash(Request $request, Booking $booking)
-    {
-        Log::info('CreateBookingController@cash called', [
-            'booking_id' => $booking->id,
-            'user_id' => optional(auth()->user())->id,
-        ]);
-
-        return view('pages.bookings.cashPayment', compact('booking'));
-    }
-
-    public function cashStart(Request $request, Booking $booking)
-    {
-        Log::info('CreateBookingController@cashStart called', [
-            'booking_id' => $booking->id,
-            'user_id' => optional(auth()->user())->id,
-        ]);
-
-        $code = $this->paymentService->generatePaymentCode();
-
-        return response()->json(['payment_code' => $code]);
-    }
-
-    public function cashConfirm(Request $request, Booking $booking, $paymentId)
-    {
-        Log::info('CreateBookingController@cashConfirm called', [
-            'booking_id' => $booking->id,
-            'payment_code' => $paymentId,
-            'user_id' => optional(auth()->user())->id,
-        ]);
-
-        try {
-            $this->paymentService->recordCashPayment($booking, $paymentId);
-            return response()->json(['status' => 'success']);
-        } catch (\RuntimeException $e) {
-            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 404);
-        }
-    }
 }

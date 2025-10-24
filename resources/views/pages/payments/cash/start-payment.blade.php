@@ -124,24 +124,14 @@
                 showLoading();
                 
                 try {
-                    const response = await fetch(`/bookings/{{ $booking->id }}/payment/cash/start`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                        }
+                    const response = await fetch('{{ route("payment.cash.get-cash-code", ["booking" => $booking->id]) }}', {
+                        method: 'GET'
                     });
                     
-                    const data = await response.json();
-                    
-                    if (response.ok) {
-                        paymentId = data.payment_code;
-                        paymentReference.textContent = data.payment_code;
-                        showStep2();
-                    } else {
-                        alert('Error: ' + (data.message || 'Failed to start payment'));
-                        showStep1();
-                    }
+                    const data = await response.text();
+                    paymentId = data;
+                    paymentReference.textContent = data;
+                    showStep2();
                 } catch (error) {
                     console.error('Error:', error);
                     alert('Network error occurred');
@@ -159,7 +149,7 @@
                 showLoading();
                 
                 try {
-                    const response = await fetch(`/bookings/{{ $booking->id }}/payment/cash/${paymentId}/confirm`, {
+                    const response = await fetch('{{ route("payment.cash.confirm", ["booking" => $booking->id, "paymentId" => "paymentId"]) }}', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

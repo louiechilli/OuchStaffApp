@@ -1034,7 +1034,7 @@ function populateWelcomeClientList() {
             this.classList.add('selected');
             const clientId = parseInt(this.dataset.clientId);
             selectedWelcomeClient = clientsList.find(c => c.id === clientId);
-            document.getElementById('finishWelcomeBtn').disabled = false;
+            document.getElementById('clientActionBtn').disabled = false;
         });
     });
 }

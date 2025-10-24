@@ -11,6 +11,8 @@ use App\Http\Controllers\Api\AvailabilityController;
 use App\Http\Controllers\LockScreenController;
 use App\Http\Middleware\CheckLockScreen;
 use App\Http\Controllers\Bookings\BookingDocumentsController;
+use App\Http\Controllers\Payments\SumUpPaymentController;
+use App\Http\Controllers\Payments\CashPaymentController;
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
@@ -60,9 +62,38 @@ Route::middleware(['auth', CheckLockScreen::class])->group(function () {
 
             Route::prefix('payment')->group(function () {
                 Route::get('/', [CreateBookingController::class, 'payment'])->name('payment.index');
-                Route::get('/cash', [CreateBookingController::class, 'cash'])->name('payment.cash');
-                Route::post('/cash/start', [CreateBookingController::class, 'cashStart'])->name('payment.cash.start');
-                Route::post('/cash/{paymentId}/confirm', [CreateBookingController::class, 'cashConfirm'])->name('payment.cash.confirm');
+
+                /*
+                 |--------------------------------------------------------------------------
+                 | Payment (SumUp) Routes
+                 | ['payment.sumup.*']
+                 |--------------------------------------------------------------------------
+                 |
+                 | All routes related to booking payments handled via SumUp Reader integration.
+                 | Handles payment initiation, status, cancellation, and other workflow endpoints
+                 | under bookings/{booking}/payment/sumup/.
+                 |
+                 */
+                Route::prefix('sumup')->name('payment.sumup.')->group(function () {
+                    Route::get('/create-payment', [SumUpPaymentController::class, 'startPayment'])->name('start-payment');
+                });
+
+                /*
+                 |--------------------------------------------------------------------------
+                 | Payment (Cash) Routes
+                 | ['payment.cash.*']
+                 |--------------------------------------------------------------------------
+                 |
+                 | All routes related to booking payments handled via Cash payment integration.
+                 | Handles payment initiation, status, cancellation, and other workflow endpoints
+                 | under bookings/{booking}/payment/cash/.
+                 |
+                 */
+                Route::prefix('cash')->name('payment.cash.')->group(function () {
+                    Route::get('/start-payment', [CashPaymentController::class, 'startPayment'])->name('start-payment');
+                    Route::get('/get-cash-code', [CashPaymentController::class, 'createCashCode'])->name('get-cash-code');
+                    Route::post('/{paymentId}/confirm', [CashPaymentController::class, 'cashConfirm'])->name('confirm');
+                });
             });
         });
     });
