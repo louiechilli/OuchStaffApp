@@ -76,6 +76,7 @@ Route::middleware(['auth', CheckLockScreen::class])->group(function () {
                  */
                 Route::prefix('sumup')->name('payment.sumup.')->group(function () {
                     Route::get('/create-payment', [SumUpPaymentController::class, 'startPayment'])->name('start-payment');
+                    Route::get('/waiting', [SumUpPaymentController::class, 'waiting'])->name('waiting');
                 });
 
                 /*

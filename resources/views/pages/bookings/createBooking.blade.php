@@ -649,7 +649,7 @@
         <div class="calendar-footer">
             <div class="max-w-6xl mx-auto flex items-center justify-end">
                 <div class="flex items-center gap-4">
-                    <span class="text-2xl font-bold text-gray-900">€29</span>
+                    <span class="text-2xl font-bold text-gray-900">£{{ number_format($service->base_price / 100, 2) }}</span>
                     <button type="button" id="confirmBtn" class="bg-teal-600 hover:bg-teal-700 text-white font-medium px-8 py-3 rounded-lg disabled:opacity-50" disabled>
                         Confirm time
                     </button>
